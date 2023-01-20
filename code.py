@@ -95,12 +95,12 @@ def err_ranges(x, func, param, sigma):
     return lower, upper
 
 
-def expoFunc(x, a, b):
+def gdp_fit(x, a, b, c):
     """
-    Function calculates the exponential function
+    Function defining fitting
 
     """
-    return a**(x+b)
+    return (a*x**2) + (b*x) + c
 
 
 # Range of year
@@ -108,7 +108,7 @@ years = [str(num) for num in list(range(1990, 2020))]
 
 # Calling read_data function to read csv file data
 co2_emission,  co2_emission_coun = read_data("CO2_Emissions.csv")
-population_growth , population_growth_coun = read_data("Population_Growth.csv")
+population_growth, population_growth_coun = read_data("Population_Growth.csv")
 agricultural_land, agricultural_land_coun = read_data("Agricultural_Land.csv")
 gdp, gdp_coun = read_data("GDP.csv")
 arable_land, arable_land_coun = read_data("Arable_Land.csv")
@@ -174,8 +174,7 @@ cluster_df = final_df
 cluster_df['Cluster'] = labels
 
 plt.figure(figsize=(9.0, 9.0))
-# Individual colours can be assigned to symbols. The label l is used to the select the
-# l-th number from the colour table.
+# Plotting scatter plot
 plt.scatter(df_fitting["Population"], df_fitting["Agriculture land"],
             c=labels, cmap="Accent", )
 
@@ -185,9 +184,9 @@ for ic in range(3):
     plt.plot(xc, yc, "dk", markersize=10)
 
 
-plt.xlabel("Population", fontsize = 15)
-plt.ylabel("Agriculture land", fontsize = 15)
-plt.title("Cluster Diagram with 3 clusters", fontsize = 15)
+plt.xlabel("Population", fontsize=15)
+plt.ylabel("Agriculture land", fontsize=15)
+plt.title("Cluster Diagram with 3 clusters", fontsize=15)
 plt.show()
 
 # Retrieving values for cluster 0, 1, 2
@@ -196,25 +195,13 @@ cluster_one = pd.DataFrame()
 cluster_two = pd.DataFrame()
 
 # Selecting Population data for fitting
-cluster_zero['Population'] = cluster_df[cluster_df['Cluster']
-                                        == 0]['Population']
-cluster_one['Population'] = cluster_df[cluster_df['Cluster'] == 1]['Population']
-cluster_two['Population'] = cluster_df[cluster_df['Cluster'] == 2]['Population']
+cluster_zero['Population(0)'] = cluster_df[cluster_df['Cluster']
+                                           == 0]['Population']
+cluster_one['Population(1)'] = cluster_df[cluster_df['Cluster']
+                                          == 1]['Population']
+cluster_two['Population(2)'] = cluster_df[cluster_df['Cluster']
+                                          == 2]['Population']
 
-# Curve Fitting
-plt.scatter(df_fitting["Population"], df_fitting["Agriculture land"])
-popt, pcov = opt.curve_fit(
-    expoFunc, df_fitting["Population"], df_fitting["Agriculture land"], p0=[-1, 1])
-
-
-a_opt, b_opt = popt
-x_mod = np.linspace(min(df_fitting["Population"]), max(
-    df_fitting["Population"]), 100)
-y_mod = expoFunc(x_mod, a_opt, b_opt)
-print(y_mod)
-plt.scatter(df_fitting["Population"], df_fitting["Agriculture land"])
-plt.plot(x_mod, y_mod, color='r')
-plt.title('Scatter plot after curve fitting')
-plt.ylabel('Consumtion')
-plt.xlabel('Access to electricity')
-plt.show()
+print(cluster_zero)
+print(cluster_two)
+print(cluster_one)
