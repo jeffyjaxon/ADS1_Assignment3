@@ -9,7 +9,7 @@ import scipy.optimize as opt
 def read_data(data_name):
     """
     Function reads data according to the file name passed and returns
-    a dataframe
+    a dataframe with year as column and country as column
 
     """
     df = pd.read_csv(data_name, header=2)
@@ -17,7 +17,8 @@ def read_data(data_name):
     data_final = data.drop(
         columns=['Country Code', 'Indicator Name', 'Indicator Code'])
 
-    return data_final
+    data_country_col = data_final.transpose()
+    return data_final, data_country_col
 
 
 def norm(array):
@@ -106,11 +107,11 @@ def expoFunc(x, a, b):
 years = [str(num) for num in list(range(1990, 2020))]
 
 # Calling read_data function to read csv file data
-co2_emission = read_data("CO2_Emissions.csv")
-population_growth = read_data("Population_Growth.csv")
-agricultural_land = read_data("Agricultural_Land.csv")
-gdp = read_data("GDP.csv")
-arable_land = read_data("Arable_Land.csv")
+co2_emission,  co2_emission_coun = read_data("CO2_Emissions.csv")
+population_growth , population_growth_coun = read_data("Population_Growth.csv")
+agricultural_land, agricultural_land_coun = read_data("Agricultural_Land.csv")
+gdp, gdp_coun = read_data("GDP.csv")
+arable_land, arable_land_coun = read_data("Arable_Land.csv")
 
 # Filtering based on year range
 agr_df = agricultural_land.loc[:, agricultural_land.columns.isin(years)]
